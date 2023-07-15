@@ -42,26 +42,46 @@ let chart = new Chart(currencyChartElement, {
     data: { labels: [], datasets: [{ label: 'Historial últimos 10 días', data: [], borderWidth: 1 }] },
     options: { scales: { y: { beginAtZero: false } } }
 });
-
 const createChart = async (data) => {
     try {
-        // Eliminar grafico anterior
-        chart.destroy();
-        // Rescatar datos para mostrar en grafico
-        const labels = await data.map(label => new Intl.DateTimeFormat('es-CL').format(new Date(label.fecha)));
-        const chartData = await data.map(data => data.valor);
-        // Transformar datos para mostrar en grafico
-        const lastTenLabels = labels.slice(-10).reverse();
-        const lastTenData = chartData.slice(-10).reverse();
-        // Crear nuevo grafico con datos rescatados
-        chart = new Chart(currencyChartElement, {
-            type: 'line',
-            data: { labels: lastTenLabels, datasets: [{ label: 'Historial últimos 10 días', data: lastTenData, borderWidth: 1 }] },
-            options: { scales: { y: { beginAtZero: false } } }
-        });
+      // Eliminar gráfico anterior
+      chart.destroy();
+      // Rescatar datos para mostrar en gráfico
+      const labels = await data.map((label) =>
+        new Intl.DateTimeFormat("es-CL").format(new Date(label.fecha))
+      );
+      const chartData = await data.map((data) => data.valor);
+      // Obtener los primeros 10 elementos
+      const firstTenLabels = labels.slice(0, 10).reverse();
+      const firstTenData = chartData.slice(0, 10).reverse();
+      // Crear nuevo gráfico con datos rescatados
+      chart = new Chart(currencyChartElement, {
+        type: "line",
+        data: {
+          labels: firstTenLabels,
+          datasets: [
+            {
+              label: "Historial primeros 10 días",
+              data: firstTenData,
+              borderWidth: 1,
+            },
+          ],
+        },
+        options: {
+          scales: {
+            y: {
+              beginAtZero: false,
+            },
+          },
+        },
+      });
     } catch (error) {
-        console.log(error);
+      console.log(error);
     }
-};
+  };
+  
+  document.getElementById("btnConvert").addEventListener("click", convertCurrency);
+  
 
-document.getElementById("btnConvert").addEventListener("click", convertCurrency);
+
+
